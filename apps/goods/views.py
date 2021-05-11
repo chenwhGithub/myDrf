@@ -23,6 +23,7 @@ class GoodsListView(APIView):
         #     json_list.append(json_dict)
         # return HttpResponse(json.dumps(json_list), content_type='application/json')
 
+
         # 利用 model_to_dict 实现返回 json 数据：
         # 不需要繁琐指定每个字段的生成，但是无法序列化 ImageFieldFile 和 DateTimeField
         # json_list = []
@@ -32,14 +33,23 @@ class GoodsListView(APIView):
         #     json_list.append(json_dict)
         # return HttpResponse(json.dumps(json_list), content_type='application/json')
 
+
         # 利用 django serializers 实现返回 json 数据：
         # 可以序列化 ImageFieldFile 和 DateTimeField，但是序列化后的格式不能修改
         # goods = Goods.objects.all()
         # json_data = serializers.serialize('json', goods)
         # return JsonResponse(json.loads(json_data), safe=False)
 
+
         # 利用 rest_framework serializers 实现返回 json 数据：
         # 可以自动以序列化的字段，ImageFieldFile 字段返回全路径
+        # goods = Goods.objects.all()
+        # goods_serialzer = GoodsSerializer(goods, many=True)
+        # return Response(goods_serialzer.data)
+
+
+        # 利用 rest_framework ModelSerializer 实现返回 json 数据：
+        # 无需手动定义每个字段，只需指明需要序列化的字段名
         goods = Goods.objects.all()
         goods_serialzer = GoodsSerializer(goods, many=True)
         return Response(goods_serialzer.data)
