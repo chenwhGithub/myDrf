@@ -29,7 +29,7 @@ class Goods(models.Model):
     storage_num = models.IntegerField(verbose_name='库存量', default=0)
     price = models.FloatField(verbose_name='价格', default=0)
     descript = models.TextField(verbose_name='描述', max_length=500)
-    image = models.ImageField(verbose_name='封面图', upload_to='goods/images/', null=True, blank=True)
+    image = models.ImageField(verbose_name='封面图', upload_to='goods/', null=True, blank=True)
     is_hot = models.BooleanField(verbose_name='是否热销', default=False)
     add_time = models.DateTimeField(verbose_name='添加时间', default=datetime.now)
 

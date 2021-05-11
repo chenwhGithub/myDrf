@@ -8,8 +8,7 @@ class AddressAdmin(object):
     search_fields = ['user', 'receiver', 'addr', 'zip_code', 'phone']
     list_filter = ['user', 'receiver', 'addr', 'zip_code', 'phone', 'is_default']
     ordering = ['-user']
-    readonly_fields = ['receiver', 'zip_code']
-    list_editable = ['addr', 'zip_code', 'phone']
+    list_editable = ['receiver', 'addr', 'zip_code', 'phone']
     refresh_times = [3, 5]
     model_icon = 'fa fa-address-card' # http://www.fontawesome.com.cn/faicons/
 
