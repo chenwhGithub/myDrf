@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'goods',
     'xadmin',
     'crispy_forms',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
