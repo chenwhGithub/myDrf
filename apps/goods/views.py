@@ -6,11 +6,12 @@ from django.forms.models import model_to_dict
 from django.core import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from .models import Goods
 from .serializers import GoodsSerializer
 
 # Create your views here.
-class GoodsListView(APIView):
+class ListView(APIView):
     def get(self, request):
         # 利用 View 实现返回 json 数据：
         # json_list = []
@@ -51,5 +52,16 @@ class GoodsListView(APIView):
         # 利用 rest_framework ModelSerializer 实现返回 json 数据：
         # 无需手动定义每个字段，只需指明需要序列化的字段名
         goods = Goods.objects.all()
-        goods_serialzer = GoodsSerializer(goods, many=True)
+        goods_serialzer = GoodsSerializer(instance=goods, many=True)
+        return Response(goods_serialzer.data)
+
+
+class DetailView(APIView):
+    def get(self, request, index):
+        try:
+            goods = Goods.objects.get(id=index)
+        except Goods.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        goods_serialzer = GoodsSerializer(goods)
         return Response(goods_serialzer.data)
