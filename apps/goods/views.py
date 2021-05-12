@@ -37,7 +37,7 @@ class ListView(APIView):
 
         # 利用 django serializers 实现返回 json 数据：
         # 可以序列化 ImageFieldFile 和 DateTimeField，但是序列化后的格式不能修改
-        # goods = Goods.objects.all()
+        # goods = Goods.objects.all()   
         # json_data = serializers.serialize('json', goods)
         # return JsonResponse(json.loads(json_data), safe=False)
 
@@ -55,6 +55,14 @@ class ListView(APIView):
         goods_serialzer = GoodsSerializer(instance=goods, many=True)
         return Response(goods_serialzer.data)
 
+    def post(self, request):
+        """ 新增 """
+        goods_serialzer = GoodsSerializer(data=request.data)
+        if goods_serialzer.is_valid(raise_exception=True):
+            goods_serialzer.save()
+            return Response(goods_serialzer.data, status=status.HTTP_201_CREATED)
+        return Response(goods_serialzer.errors)
+
 
 class DetailView(APIView):
     def get(self, request, index):
@@ -63,5 +71,26 @@ class DetailView(APIView):
         except Goods.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        goods_serialzer = GoodsSerializer(goods)
+        goods_serialzer = GoodsSerializer(instance=goods)
         return Response(goods_serialzer.data)
+
+    def put(self, request, index):
+        try:
+            goods = Goods.objects.get(id=index)
+        except Goods.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        goods_serialzer = GoodsSerializer(instance=goods, data=request.data, partial=True)
+        if goods_serialzer.is_valid(raise_exception=True):
+            goods_serialzer.save()
+            return Response(goods_serialzer.data)
+        return Response(goods_serialzer.errors)
+
+    def delete(self, request, index):
+        try:
+            goods = Goods.objects.get(id=index)
+        except Goods.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        goods.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

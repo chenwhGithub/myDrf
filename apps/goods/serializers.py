@@ -22,8 +22,16 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GoodsSerializer(serializers.ModelSerializer):
-    # 外键展开，属性名必须与 model 定义一致
-    category = CategorySerializer()
+    # 外键处理，当序列化与反序列化的类型不同时，需要分别生成 read_only 和 write_only 两个字段
+    category = CategorySerializer(read_only=True)
+    category_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Goods
-        fields = ['category', 'name', 'click_num', 'sold_num', 'fav_num', 'storage_num', 'price', 'descript', 'image', 'is_hot', 'add_time']
+        # fields = '__all__'
+        fields = ['category', 'category_id', 'name', 'click_num', 'sold_num', 'fav_num', 'storage_num', 'price', 'descript', 'image', 'is_hot', 'add_time']
+
+    def create(self, validated_data):
+        # POST 消息处理中 goods_serialzer.save() 调用
+        category_obj = Category.objects.get(id=validated_data['category_id'])
+        goods_obj = Goods.objects.create(category=category_obj, **validated_data)
+        return goods_obj
